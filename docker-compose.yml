@@ -1,0 +1,12 @@
+# services:
+#   vaquinhaonline.api:
+#     image: ${DOCKER_REGISTRY-}vaquinhaonlineapi
+#     build:
+#       context: .
+#       dockerfile: VaquinhaOnline/Dockerfile
+services:
+  postgres_db:
+    image: postgres:14
+
+volumes: 
+  db_data:  

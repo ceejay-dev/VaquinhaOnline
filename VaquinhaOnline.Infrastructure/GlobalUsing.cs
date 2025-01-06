@@ -1,0 +1,13 @@
+﻿global using Microsoft.EntityFrameworkCore;
+global using VaquinhaOnline.Domain.Entities;
+global using VaquinhaOnline.Domain.Interfaces;
+global using VaquinhaOnline.Infrastructure.Persistence;
+global using VaquinhaOnline.Domain.DomainObjects;
+global using VaquinhaOnline.Domain.Results;
+global using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+global using Microsoft.AspNetCore.Identity;
+global using VaquinhaOnline.Infrastructure.IdentityModels;
+global using Microsoft.EntityFrameworkCore.Metadata.Builders;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
+global using VaquinhaOnline.Infrastructure.Repositories;

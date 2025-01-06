@@ -1,0 +1,16 @@
+﻿global using Microsoft.Extensions.Configuration;
+global using Microsoft.IdentityModel.Tokens;
+global using System.IdentityModel.Tokens.Jwt;
+global using System.Security.Claims;
+global using System.Text;
+global using VaquinhaOnline.Application.Dtos.Investment;
+global using VaquinhaOnline.Domain.Results;
+global using VaquinhaOnline.Application.Dtos.Project;
+global using FluentValidation;
+global using VaquinhaOnline.Domain.Entities;
+global using VaquinhaOnline.Domain.Interfaces.IRepository;
+global using Microsoft.Extensions.DependencyInjection;
+global using System.Reflection;
+global using VaquinhaOnline.Application.Contracts;
+global using VaquinhaOnline.Application.Features.Investments;
+global using VaquinhaOnline.Application.Dtos.User;

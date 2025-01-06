@@ -1,0 +1,14 @@
+services:
+  postgres_db:
+    container_name: vaquinha-online
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres1234!
+      POSTGRES_DB: VaquinhaOnlineDb
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
