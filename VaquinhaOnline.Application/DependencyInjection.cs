@@ -24,7 +24,6 @@ public static class DependencyInjection
         }
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IInvestmentService, InvestmentService>();
-        //services.AddScoped<IService, JwtService>();
         return services;
     }
 }

@@ -6,11 +6,15 @@ public class InvestmentRepository(ApplicationDbContext context) : BaseRepository
 {
     public IQueryable<Investment> GetAllInvestments()
     {
-        return context.Investments.AsQueryable();
+        return context.Investments
+            .AsNoTracking()
+            .Include(x=>x.Project)
+            .AsQueryable();
     }
 
     public async Task<Investment> GetInvestmentById(Guid id, CancellationToken cancellationToken)
     {
-        return await context.Investments.FirstOrDefaultAsync(x => x.Id == id);
+        return await context.Investments
+            .FirstOrDefaultAsync(x => x.Id == id);
     }
 }

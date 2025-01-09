@@ -14,3 +14,5 @@ global using System.Reflection;
 global using VaquinhaOnline.Application.Contracts;
 global using VaquinhaOnline.Application.Features.Investments;
 global using VaquinhaOnline.Application.Dtos.User;
+global using Mapster;
+global using Microsoft.EntityFrameworkCore;

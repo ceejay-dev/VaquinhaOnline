@@ -37,7 +37,7 @@ public class Project : Entity
         UserId = userId;
     }
 
-    public void Update(string title, string description, string sector, double goalValue, double currentValue, DateTime publicationDate, DateTime closingDate)
+    public void Update(string title, string description, string sector, double goalValue, double currentValue, DateTime publicationDate, DateTime closingDate, string progress)
     {
         Title = title;
         Description = description;
@@ -46,6 +46,7 @@ public class Project : Entity
         CurrentValue = currentValue;
         PublicationDate = publicationDate;
         ClosingDate = closingDate;
+        Progress = progress;
     }
 
 }
