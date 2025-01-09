@@ -2,9 +2,9 @@
 
 public class AppUser : IdentityUser<Guid>
 {
-    public string Name { get; private set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
     public DateTime CreationDate { get; set; }
-    public string ProfilePhoto { get; private set; } = string.Empty;
+    public string ProfilePhoto { get; set; } = string.Empty;
     public string? RefreshToken { get; set; }
     public DateTime RefreshTokenExpiryTime { get; set; }
 
