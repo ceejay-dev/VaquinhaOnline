@@ -33,7 +33,7 @@ namespace VaquinhaOnline.Infrastructure.Persistence.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", maxLength: 50, nullable: false),
                     CreationDate = table.Column<DateTime>(type: "DATE", nullable: false),
-                    ProfilePhoto = table.Column<string>(type: "text", nullable: true),
+                    Type = table.Column<string>(type: "text", maxLength: 50, nullable: false),
                     RefreshToken = table.Column<string>(type: "text", maxLength: 500, nullable: true),
                     RefreshTokenExpiryTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),

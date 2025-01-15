@@ -12,7 +12,7 @@ using VaquinhaOnline.Infrastructure.Persistence;
 namespace VaquinhaOnline.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250115193043_init")]
+    [Migration("20250115200836_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -298,10 +298,6 @@ namespace VaquinhaOnline.Infrastructure.Persistence.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("ProfilePhoto")
-                        .HasColumnType("text")
-                        .HasColumnName("ProfilePhoto");
-
                     b.Property<string>("RefreshToken")
                         .HasMaxLength(500)
                         .HasColumnType("text")
@@ -316,6 +312,12 @@ namespace VaquinhaOnline.Infrastructure.Persistence.Migrations
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("text")
+                        .HasColumnName("Type");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)

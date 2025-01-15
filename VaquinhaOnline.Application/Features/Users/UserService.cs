@@ -35,10 +35,11 @@ public class UserService(UserManager<AppUser> userManager, IValidator<UserCreate
         {
             Name = User.Name,
             CreationDate = DateTime.UtcNow,
-            ProfilePhoto = User.ProfilePhoto,
             Email = User.Email,
+            Type = User.Type,
             NormalizedEmail = User.Email.ToUpper(),
             UserName = User.PhoneNumber,
+            PhoneNumber = User.PhoneNumber,
             NormalizedUserName = User.PhoneNumber.ToUpper(),
         };
 
@@ -154,7 +155,6 @@ public class UserService(UserManager<AppUser> userManager, IValidator<UserCreate
         // Gerar o token JWT
         var token = new JwtSecurityTokenHandler().WriteToken(jwtService.Generate(authClaims, configuration));
 
-        // Lembre-se de adicionar melhor resposta, incluindo informações como access token, refresh token, user roles e ban (se aplicável)
         return Result.Succeed(token);
     }
 
@@ -179,7 +179,6 @@ public class UserService(UserManager<AppUser> userManager, IValidator<UserCreate
         user.Name = User.Name;
         user.Email = User.Email;
         user.PhoneNumber = User.PhoneNumber;
-        user.ProfilePhoto = User.ProfilePhoto;
 
         // Salvar as alterações
         var updateResult = await userManager.UpdateAsync(user);

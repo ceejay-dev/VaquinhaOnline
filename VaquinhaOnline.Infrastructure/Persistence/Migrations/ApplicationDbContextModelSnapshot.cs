@@ -295,10 +295,6 @@ namespace VaquinhaOnline.Infrastructure.Persistence.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("ProfilePhoto")
-                        .HasColumnType("text")
-                        .HasColumnName("ProfilePhoto");
-
                     b.Property<string>("RefreshToken")
                         .HasMaxLength(500)
                         .HasColumnType("text")
@@ -313,6 +309,12 @@ namespace VaquinhaOnline.Infrastructure.Persistence.Migrations
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("text")
+                        .HasColumnName("Type");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)

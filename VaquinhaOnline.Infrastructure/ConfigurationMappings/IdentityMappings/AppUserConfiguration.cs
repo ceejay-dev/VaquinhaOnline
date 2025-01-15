@@ -18,10 +18,16 @@ public class AppUserConfiguration : IEntityTypeConfiguration<AppUser>
             .HasColumnType("text")
             .HasMaxLength(50);
 
-        builder.Property(x => x.ProfilePhoto)
-            .IsRequired(false)
-            .HasColumnName("ProfilePhoto")
-            .HasColumnType("text");
+        builder.Property(x => x.Type)
+            .IsRequired()
+            .HasColumnName("Type")
+            .HasColumnType("text")
+            .HasMaxLength(50);
+
+        //builder.Property(x => x.ProfilePhoto)
+        //    .IsRequired(false)
+        //    .HasColumnName("ProfilePhoto")
+        //    .HasColumnType("text");
 
         builder.Property(x => x.CreationDate)
             .IsRequired()

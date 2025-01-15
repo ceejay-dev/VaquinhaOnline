@@ -7,10 +7,9 @@ namespace VaquinhaOnline.Api.Controllers;
 
 [Route("api/v1/user")]
 [ApiController]
-public class UserController (IUserService userService, CancellationToken cancellationToken) : Controller
+public class UserController (IUserService userService) : Controller
 {
     private readonly IUserService userService = userService;
-    private readonly CancellationToken cancellationToken = cancellationToken;
 
     [HttpPut("{id:guid}")]
     [SwaggerOperation(
@@ -37,6 +36,7 @@ public class UserController (IUserService userService, CancellationToken cancell
     )]
     public async Task<IActionResult> GetUserById([FromRoute] UserGetDto User)
     {
+        var cancellationToken = HttpContext.RequestAborted;
         var result = await userService.GetUserById(User.Id, cancellationToken);
 
         if (result.IsSucess)
@@ -55,6 +55,7 @@ public class UserController (IUserService userService, CancellationToken cancell
    )]
     public async Task<IActionResult> GetAllUsers([FromQuery] int PageNumber, int PageSize)
     {
+        var cancellationToken = HttpContext.RequestAborted;
         if (PageNumber < 1 || PageSize < 1)
         {
             return BadRequest("PageNumber & PageSize must be greater than 0.");
