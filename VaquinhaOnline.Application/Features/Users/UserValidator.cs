@@ -12,9 +12,9 @@ public class UserValidator : AbstractValidator<UserCreateDto>
             .NotEmpty().WithMessage("The email is required.")
             .EmailAddress().WithMessage("The email must be a valid email address.");
 
-        RuleFor(x => x.PhoneNumber)
-            .NotEmpty().WithMessage("The phone number is required.")
-            .Matches(@"^\+?\d{10,15}$").WithMessage("The phone number must be valid (e.g., '+1234567890').");
+        //RuleFor(x => x.PhoneNumber)
+        //    .NotEmpty().WithMessage("The phone number is required.")
+        //    .Matches(@"^\+?\d{10,15}$").WithMessage("The phone number must be valid (e.g., '+1234567890').");
 
         RuleFor(x => x.Password)
             .NotEmpty().WithMessage("The password is required.")

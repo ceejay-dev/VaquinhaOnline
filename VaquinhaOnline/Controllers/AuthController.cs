@@ -5,19 +5,26 @@ using VaquinhaOnline.Application.Features.Users;
 
 namespace VaquinhaOnline.Api.Controllers;
 
-public class AuthController (IUserService userService, CancellationToken cancellationToken) : ControllerBase
+[ApiController]
+[Route("api/[controller]")]
+public class AuthController : ControllerBase
 {
-    private readonly IUserService userService = userService;
-    private readonly CancellationToken cancellationToken = cancellationToken;
+    private readonly IUserService _userService;
+
+    public AuthController(IUserService userService)
+    {
+        _userService = userService;
+    }
 
     [HttpPost("signup")]
     [SwaggerOperation(
         Summary = "Cria um novo utilizador",
         Description = "Endpoint para adicionar um novo utilizador ao sistema com os detalhes necessários."
     )]
-    public async Task<IActionResult> CreateUser([FromBody] UserCreateDto User)
+    public async Task<IActionResult> CreateUser([FromBody] UserCreateDto user)
     {
-        var result = await userService.CreateUser(User, cancellationToken);
+        var cancellationToken = HttpContext.RequestAborted;
+        var result = await _userService.CreateUser(user, cancellationToken);
 
         return result.IsSucess
             ? Ok(new { Id = result.Value })
@@ -27,11 +34,11 @@ public class AuthController (IUserService userService, CancellationToken cancell
     [HttpPost("login")]
     [SwaggerOperation(
         Summary = "Login do utilizador",
-        Description = "Endpoint para a início de sessão de um utilizador registado no sistema com os detalhes necessários."
+        Description = "Endpoint para início de sessão de um utilizador registado no sistema com os detalhes necessários."
     )]
     public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequest)
     {
-        var result = await userService.Login(loginRequest);
+        var result = await _userService.Login(loginRequest);
 
         return result.IsSucess
             ? Ok(new { Token = result.Value })

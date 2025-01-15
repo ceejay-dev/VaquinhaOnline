@@ -1,4 +1,7 @@
-﻿namespace VaquinhaOnline.Application;
+﻿using VaquinhaOnline.Application.Features.Projects;
+using VaquinhaOnline.Application.Features.Users;
+
+namespace VaquinhaOnline.Application;
 
 public static class DependencyInjection
 {
@@ -24,6 +27,8 @@ public static class DependencyInjection
         }
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IInvestmentService, InvestmentService>();
+        services.AddScoped<IProjectService, ProjectService>();
+        services.AddScoped<IUserService, UserService>();
         return services;
     }
 }

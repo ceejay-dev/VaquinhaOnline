@@ -12,7 +12,7 @@ using VaquinhaOnline.Infrastructure.Persistence;
 namespace VaquinhaOnline.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250106210949_init")]
+    [Migration("20250115193043_init")]
     partial class init
     {
         /// <inheritdoc />
