@@ -36,7 +36,7 @@ public class UserService(UserManager<AppUser> userManager, IValidator<UserCreate
             Name = User.Name,
             CreationDate = DateTime.UtcNow,
             Email = User.Email,
-            Type = User.Type,
+            Role = User.Role,
             NormalizedEmail = User.Email.ToUpper(),
             UserName = User.PhoneNumber,
             PhoneNumber = User.PhoneNumber,
@@ -161,13 +161,13 @@ public class UserService(UserManager<AppUser> userManager, IValidator<UserCreate
     public async Task<Result> UpdateUser(UserUpdateDto User, CancellationToken cancellationToken)
     {
         // Validar os dados recebidos
-        var dto = User.Adapt<UserCreateDto>();
+        var dto = User.Adapt<UserUpdateDto>();
 
-        var validationResult = validator.Validate(dto);
-        if (!validationResult.IsValid)
-        {
-            return Result.Failure(Error.Invalid("Error.Validation", validationResult.ToString()));
-        }
+        //var validationResult = validator.Validate(dto);
+        //if (!validationResult.IsValid)
+        //{
+        //    return Result.Failure(Error.Invalid("Error.Validation", validationResult.ToString()));
+        //}
 
         // Buscar o usuário pelo ID
         var user = await userManager.FindByIdAsync(User.Id.ToString());

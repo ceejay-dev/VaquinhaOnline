@@ -18,9 +18,9 @@ public class AppUserConfiguration : IEntityTypeConfiguration<AppUser>
             .HasColumnType("text")
             .HasMaxLength(50);
 
-        builder.Property(x => x.Type)
+        builder.Property(x => x.Role)
             .IsRequired()
-            .HasColumnName("Type")
+            .HasColumnName("Role")
             .HasColumnType("text")
             .HasMaxLength(50);
 

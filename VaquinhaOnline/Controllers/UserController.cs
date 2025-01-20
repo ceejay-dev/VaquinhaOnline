@@ -34,10 +34,10 @@ public class UserController (IUserService userService) : Controller
         Summary = "Recupera um utilizador",
         Description = "Endpoint para recuperação de um utilizador do sistema pelo Id."
     )]
-    public async Task<IActionResult> GetUserById([FromRoute] UserGetDto User)
+    public async Task<IActionResult> GetUserById([FromRoute] Guid Id)   
     {
         var cancellationToken = HttpContext.RequestAborted;
-        var result = await userService.GetUserById(User.Id, cancellationToken);
+        var result = await userService.GetUserById(Id, cancellationToken);
 
         if (result.IsSucess)
             return Ok(result);
