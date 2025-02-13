@@ -12,8 +12,8 @@ using VaquinhaOnline.Infrastructure.Persistence;
 namespace VaquinhaOnline.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250115200836_init")]
-    partial class init
+    [Migration("20250213155007_updateProject")]
+    partial class updateProject
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -181,11 +181,6 @@ namespace VaquinhaOnline.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("InvestmentId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Progress")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("Progress");
-
                     b.Property<DateTime>("PublicationDate")
                         .HasColumnType("DATE")
                         .HasColumnName("PublicationDate");
@@ -241,7 +236,7 @@ namespace VaquinhaOnline.Infrastructure.Persistence.Migrations
                         .IsUnique()
                         .HasDatabaseName("RoleNameIndex");
 
-                    b.ToTable("AspNetRoles", (string)null);
+                    b.ToTable("IdentityRole", (string)null);
                 });
 
             modelBuilder.Entity("VaquinhaOnline.Infrastructure.IdentityModels.AppUser", b =>
@@ -298,6 +293,11 @@ namespace VaquinhaOnline.Infrastructure.Persistence.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("ProfilePhoto")
+                        .HasMaxLength(50)
+                        .HasColumnType("text")
+                        .HasColumnName("ProfilePhoto");
+
                     b.Property<string>("RefreshToken")
                         .HasMaxLength(500)
                         .HasColumnType("text")
@@ -313,12 +313,6 @@ namespace VaquinhaOnline.Infrastructure.Persistence.Migrations
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("text")
-                        .HasColumnName("Type");
-
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
@@ -332,7 +326,7 @@ namespace VaquinhaOnline.Infrastructure.Persistence.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
 
-                    b.ToTable("AspNetUsers", (string)null);
+                    b.ToTable("IdentityUser", (string)null);
                 });
 
             modelBuilder.Entity("VaquinhaOnline.Infrastructure.IdentityModels.AppUserRole", b =>
@@ -343,21 +337,11 @@ namespace VaquinhaOnline.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("RoleId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("RoleId1")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("UserId1")
-                        .HasColumnType("uuid");
-
                     b.HasKey("UserId", "RoleId");
 
                     b.HasIndex("RoleId");
 
-                    b.HasIndex("RoleId1");
-
-                    b.HasIndex("UserId1");
-
-                    b.ToTable("AspNetUserRoles", (string)null);
+                    b.ToTable("IdentityUserRole", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -422,27 +406,15 @@ namespace VaquinhaOnline.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("VaquinhaOnline.Infrastructure.IdentityModels.AppUserRole", b =>
                 {
-                    b.HasOne("VaquinhaOnline.Infrastructure.IdentityModels.AppRole", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("VaquinhaOnline.Infrastructure.IdentityModels.AppRole", "Role")
                         .WithMany("UserRoles")
-                        .HasForeignKey("RoleId1")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("VaquinhaOnline.Infrastructure.IdentityModels.AppUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("VaquinhaOnline.Infrastructure.IdentityModels.AppUser", "User")
                         .WithMany("UserRoles")
-                        .HasForeignKey("UserId1")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

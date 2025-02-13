@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using VaquinhaOnline.Infrastructure.IdentityModels;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace VaquinhaOnline.Application.Features.Users;
 
 public class UserService(UserManager<AppUser> userManager, IValidator<UserCreateDto> validator,
     SignInManager<AppUser> signInManager, IConfiguration configuration,
-    IJwtService jwtService, IValidator<LoginRequestDto> validatorr) : IUserService
+    IJwtService jwtService, IValidator<LoginRequestDto> validatorr, IValidator<UserUpdateDto> updateValidator) : IUserService
 {
     private readonly UserManager<AppUser> userManager = userManager;
     private readonly SignInManager<AppUser> signInManager = signInManager;
@@ -13,8 +15,9 @@ public class UserService(UserManager<AppUser> userManager, IValidator<UserCreate
     private readonly IJwtService jwtService = jwtService;
     private readonly IValidator<UserCreateDto> validator = validator;
     private readonly IValidator<LoginRequestDto> validatorr = validatorr;
+    private readonly IValidator<UserUpdateDto> updateValidator = updateValidator;
 
-    public async Task<Result<Guid>> CreateUser(UserCreateDto User, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> CreateUser(UserCreateDto User, IFormFile ProfilePhoto,CancellationToken cancellationToken)
     {
         var validateCommand = validator.Validate(User);
 
@@ -24,19 +27,36 @@ public class UserService(UserManager<AppUser> userManager, IValidator<UserCreate
         }
 
         var existingEmail = await userManager.FindByEmailAsync(User.Email);
-        //remember to verify also the phone number 
 
         if (existingEmail != null)
         {
             return Result.Failure<Guid>(Error.Conflit("Error.Conflict", "The email has already been registred."));
         }
 
+        string photoPath = null;
+
+        if (ProfilePhoto != null)
+        {
+            var uploadsFolder = Path.Combine("wwwroot", "profile");
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+            var uniqueFileName = Guid.NewGuid() + Path.GetExtension(ProfilePhoto.FileName);
+            photoPath = Path.Combine(uploadsFolder, uniqueFileName);
+            using (var fileStream = new FileStream(photoPath, FileMode.Create))
+            {
+                await ProfilePhoto.CopyToAsync(fileStream);
+            }
+            photoPath = uniqueFileName;
+        }
+
         var user = new AppUser
         {
             Name = User.Name,
             CreationDate = DateTime.UtcNow,
+            ProfilePhoto = photoPath,
             Email = User.Email,
-            Type = User.Type,
             NormalizedEmail = User.Email.ToUpper(),
             UserName = User.PhoneNumber,
             PhoneNumber = User.PhoneNumber,
@@ -44,26 +64,43 @@ public class UserService(UserManager<AppUser> userManager, IValidator<UserCreate
         };
 
         var identityReuslt = await userManager.CreateAsync(user, User.Password);
+        var roleResult = await userManager.AddToRoleAsync(user, User.Type);
 
         if (!identityReuslt.Succeeded)
         {
             return Result.Failure<Guid>(Error.Failure("Error.CreateUser", identityReuslt.ToString()));
         }
 
+        if (!roleResult.Succeeded)
+        {
+            return Result.Failure<Guid>(Error.Failure("Error.CreateUser", roleResult.ToString()));
+        }
+
+        //envio do email aqui
+
         return Result.Succeed(user.Id);
     }
 
-    public async Task<Result> DeleteUser(Guid Id, CancellationToken cancellationToken)
+    public async Task<IdentityResult> DeleteUser(Guid Id, CancellationToken cancellationToken)
     {
         var user = await userManager.FindByIdAsync(Id.ToString());
 
         if (user == null)
         {
-            return Result.Failure(Error.NotFound("NotFound", "The user was not found."));
+            return IdentityResult.Failed();
+        }
+
+        if (!string.IsNullOrEmpty(user.ProfilePhoto))
+        {
+            string fullPath = Path.Combine("wwwroot", user.ProfilePhoto.TrimStart('/').Replace('/', Path.DirectorySeparatorChar));
+            if (File.Exists(fullPath))
+            {
+                File.Delete(fullPath);
+            }
         }
 
         var result = await userManager.DeleteAsync(user);
-        return result.Adapt<Result>();
+        return result;
     }
 
     public async Task<ResultPaginated<List<UserGetDto>>> GetAllUsers(int PageNumber, int PageSize, CancellationToken cancellationToken)
@@ -139,8 +176,15 @@ public class UserService(UserManager<AppUser> userManager, IValidator<UserCreate
             return Result.Failure<string>(Error.Failure("Error.Unauthorized", "Invalid credentials"));
         }
 
-        // Obter os papéis do usuário
         var userRoles = await userManager.GetRolesAsync(user);
+
+        //if (!userRoles.Any())
+        //{
+        //    return Result.Failure<LoginResponseDto>(Error.Failure("Error.Unauthorized", "User has no assigned roles."));
+        //}
+
+        //// Selecionar o primeiro papel (caso o usuário tenha múltiplos)
+        //var userRole = userRoles.FirstOrDefault();
 
         // Criar os claims do token
         var userClaims = new UserTokenDto(
@@ -158,29 +202,57 @@ public class UserService(UserManager<AppUser> userManager, IValidator<UserCreate
         return Result.Succeed(token);
     }
 
-    public async Task<Result> UpdateUser(UserUpdateDto User, CancellationToken cancellationToken)
+    public async Task<Result> UpdateUser(UserUpdateDto User, IFormFile ProfilePhoto, CancellationToken cancellationToken)
     {
-        // Validar os dados recebidos
-        var dto = User.Adapt<UserCreateDto>();
+        var dto = User.Adapt<UserUpdateDto>();
 
-        var validationResult = validator.Validate(dto);
+        var validationResult = updateValidator.Validate(dto);
         if (!validationResult.IsValid)
         {
             return Result.Failure(Error.Invalid("Error.Validation", validationResult.ToString()));
         }
 
-        // Buscar o usuário pelo ID
         var user = await userManager.FindByIdAsync(User.Id.ToString());
         if (user == null)
         {
             return Result.Failure(Error.NotFound("Error.NotFound", "User not found."));
         }
 
+        if (!string.IsNullOrEmpty(user.ProfilePhoto))
+        {
+            var uploadsFolder = Path.Combine("wwwroot", "profile");
+            string fullPath = Path.Combine(uploadsFolder, user.ProfilePhoto);
+
+            if (File.Exists(fullPath))
+            {
+                File.Delete(fullPath);
+            }
+        }
+
+
+        string photoPath = null;
+
+        if (ProfilePhoto != null)
+        {
+            var uploadsFolder = Path.Combine("wwwroot", "profile");
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+            var uniqueFileName = Guid.NewGuid() + Path.GetExtension(ProfilePhoto.FileName);
+            photoPath = Path.Combine(uploadsFolder, uniqueFileName);
+            using (var fileStream = new FileStream(photoPath, FileMode.Create))
+            {
+                await ProfilePhoto.CopyToAsync(fileStream);
+            }
+            photoPath = uniqueFileName;
+        }
+
         user.Name = User.Name;
         user.Email = User.Email;
         user.PhoneNumber = User.PhoneNumber;
+        user.ProfilePhoto = photoPath;
 
-        // Salvar as alterações
         var updateResult = await userManager.UpdateAsync(user);
         if (!updateResult.Succeeded)
         {

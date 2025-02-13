@@ -6,25 +6,20 @@ using VaquinhaOnline.Application.Features.Users;
 namespace VaquinhaOnline.Api.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
-public class AuthController : ControllerBase
+[Route("api/v1/[controller]")]
+public class AuthController(IUserService userService) : ControllerBase
 {
-    private readonly IUserService _userService;
-
-    public AuthController(IUserService userService)
-    {
-        _userService = userService;
-    }
+    private readonly IUserService _userService = userService;
 
     [HttpPost("signup")]
     [SwaggerOperation(
         Summary = "Cria um novo utilizador",
         Description = "Endpoint para adicionar um novo utilizador ao sistema com os detalhes necessários."
     )]
-    public async Task<IActionResult> CreateUser([FromBody] UserCreateDto user)
+    public async Task<IActionResult> CreateUser([FromForm] UserCreateDto user, IFormFile profilePhoto)
     {
         var cancellationToken = HttpContext.RequestAborted;
-        var result = await _userService.CreateUser(user, cancellationToken);
+        var result = await _userService.CreateUser(user, profilePhoto,cancellationToken);
 
         return result.IsSucess
             ? Ok(new { Id = result.Value })

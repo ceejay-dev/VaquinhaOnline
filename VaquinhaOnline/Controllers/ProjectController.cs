@@ -17,9 +17,9 @@ public class ProjectController(IProjectService projectService) : ControllerBase
         Summary = "Cria um novo projecto",
         Description = "Endpoint para adicionar um novo projecto ao sistema com os detalhes necessários."
     )]
-    public async Task<IActionResult> CreateProject([FromBody] ProjectCreateDto project, CancellationToken cancellationToken)
+    public async Task<IActionResult> CreateProject([FromForm] ProjectCreateDto project, IFormFile Image,CancellationToken cancellationToken)
     {
-        var result = await projectService.CreateProject(project, cancellationToken);
+        var result = await projectService.CreateProject(project, Image, cancellationToken);
 
         return result.IsSucess
             ? Ok(new { Id = result.Value })

@@ -49,11 +49,6 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
             .HasColumnName("ClosingDate")
             .HasColumnType("DATE");
 
-        builder.Property(x => x.Progress)
-            .IsRequired()
-            .HasColumnName("Progress")
-            .HasColumnType("text");
-
         builder.HasOne(x => x.Investment)
             .WithOne(x => x.Project) 
             .HasForeignKey<Investment>(x => x.ProjectId);

@@ -1,8 +1,8 @@
 ﻿namespace VaquinhaOnline.Application.Features.Users;
 
-public class UserValidator : AbstractValidator<UserCreateDto>
+public class UpdateUserValidator : AbstractValidator<UserUpdateDto>
 {
-    public UserValidator()
+    public UpdateUserValidator()
     {
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("The name is required.")
@@ -18,13 +18,5 @@ public class UserValidator : AbstractValidator<UserCreateDto>
             .WithMessage("Phone number is required.")
             .Matches(@"^\d{7,15}$")
             .WithMessage("Phone number must contain only digits and be between 7 and 15 characters long.");
-
-        RuleFor(x => x.Password)
-            .NotEmpty().WithMessage("The password is required.")
-            .MinimumLength(8).WithMessage("The password must be at least 8 characters long.")
-            .Matches(@"[A-Z]").WithMessage("The password must contain at least one uppercase letter.")
-            .Matches(@"[a-z]").WithMessage("The password must contain at least one lowercase letter.")
-            .Matches(@"[0-9]").WithMessage("The password must contain at least one digit.")
-            .Matches(@"[\W_]").WithMessage("The password must contain at least one special character.");
     }
 }

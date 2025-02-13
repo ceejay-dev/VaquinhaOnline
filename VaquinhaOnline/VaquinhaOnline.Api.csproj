@@ -25,4 +25,8 @@
     <ProjectReference Include="..\VaquinhaOnline.Infrastructure\VaquinhaOnline.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\profile\" />
+  </ItemGroup>
+
 </Project>

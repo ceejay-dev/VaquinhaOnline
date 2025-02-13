@@ -12,7 +12,6 @@ public class Project : Entity
     public double CurrentValue { get; private set; }
     public DateTime PublicationDate { get; private set; }
     public DateTime ClosingDate { get; private set; }
-    public string Progress { get; private set; } = string.Empty;
 
 
     //navegation properties
@@ -23,30 +22,30 @@ public class Project : Entity
     {
     }
 
-    public Project(string title, string description, string sector, string status, double goalValue, double currentValue, DateTime publicationDate, DateTime closingDate, string progress, Guid userId)
+    public Project(string title, string description, string sector, string status, double goalValue, DateTime closingDate, Guid userId)
     {
         Title = title;
         Description = description;
         Sector = sector;
         Status = status;
         GoalValue = goalValue;
-        CurrentValue = currentValue;
-        PublicationDate = publicationDate;
+        CurrentValue = 0;
+        PublicationDate = DateTime.UtcNow;
         ClosingDate = closingDate;
-        Progress = progress;
         UserId = userId;
     }
 
-    public void Update(string title, string description, string sector, double goalValue, double currentValue, DateTime publicationDate, DateTime closingDate, string progress)
+    public void Update(string title, string description, string sector, double currentValue)
     {
         Title = title;
         Description = description;
         Sector = sector;
-        GoalValue = goalValue;
         CurrentValue = currentValue;
-        PublicationDate = publicationDate;
-        ClosingDate = closingDate;
-        Progress = progress;
+    }
+
+    public void UpdateCurrentValue (double value)
+    {
+        CurrentValue += value;
     }
 
 }

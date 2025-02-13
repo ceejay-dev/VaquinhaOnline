@@ -1,5 +1,6 @@
 ﻿
 using FluentValidation;
+using Microsoft.AspNetCore.Http;
 using VaquinhaOnline.Domain.Entities;
 using VaquinhaOnline.Domain.Interfaces.IRepository;
 using VaquinhaOnline.Infrastructure.Repositories;
@@ -11,7 +12,7 @@ public class ProjectService(IProjectRepository projectRepository, IValidator<Pro
     private readonly IProjectRepository projectRepository = projectRepository;
     private readonly IValidator<ProjectCreateDto> validator = validator;
 
-    public async Task<Result<Guid>> CreateProject(ProjectCreateDto projectDto, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> CreateProject(ProjectCreateDto projectDto, IFormFile Image,CancellationToken cancellationToken)
     {
         var validationResult = validator.Validate(projectDto);
 
@@ -28,10 +29,7 @@ public class ProjectService(IProjectRepository projectRepository, IValidator<Pro
             sector: projectDto.Sector,
             status: projectDto.Status,
             goalValue: projectDto.GoalValue,
-            currentValue: projectDto.CurrentValue,
-            publicationDate: projectDto.PublicationDate,
             closingDate: projectDto.ClosingDate,
-            progress: projectDto.Progress,
             userId: projectDto.UserId
         );
 
@@ -126,11 +124,7 @@ public class ProjectService(IProjectRepository projectRepository, IValidator<Pro
             title: existingProject.Title,
             description: existingProject.Description,
             sector: existingProject.Sector,
-            goalValue: existingProject.GoalValue,
-            currentValue: existingProject.CurrentValue,
-            publicationDate: existingProject.PublicationDate,
-            closingDate: existingProject.ClosingDate,
-            progress: existingProject.Progress
+            currentValue: existingProject.CurrentValue
         );
 
         var result = await projectRepository.Update(existingProject, cancellationToken);

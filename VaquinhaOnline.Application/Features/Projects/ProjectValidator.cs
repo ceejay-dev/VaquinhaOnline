@@ -24,24 +24,9 @@ public class ProjectValidator : AbstractValidator<ProjectCreateDto>
         RuleFor(x => x.GoalValue)
             .GreaterThan(0).WithMessage("The goal value must be greater than zero.");
 
-        RuleFor(x => x.CurrentValue)
-            .GreaterThanOrEqualTo(0).WithMessage("The current value must be greater than or equal to zero.")
-            .LessThanOrEqualTo(x => x.GoalValue)
-            .WithMessage("The current value cannot exceed the goal value.");
-
-        RuleFor(x => x.PublicationDate)
-            .LessThanOrEqualTo(DateTime.UtcNow).WithMessage("The publication date cannot be in the future.");
-
         RuleFor(x => x.ClosingDate)
-            .GreaterThan(x => x.PublicationDate)
-            .WithMessage("The closing date must be after the publication date.");
-
-        RuleFor(x => x.Progress)
-            .NotEmpty().WithMessage("The progress is required.")
-            .Must(x => new[] { "Not Funded", "Partially Funded", "Fully Funded", "Mentorship Phase" }
-            .Contains(x))
-            .WithMessage("The progress must be one of the following: 'Not Funded', 'Partially Funded', 'Fully Funded', or 'Mentorship Phase'.");
-
+            .NotEmpty().NotNull()
+            .WithMessage("The closing date required.");
     }
 }
 

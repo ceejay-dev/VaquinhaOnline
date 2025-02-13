@@ -1,6 +1,7 @@
 using VaquinhaOnline.Api.Extensions;
 using VaquinhaOnline.Application;
 using VaquinhaOnline.Infrastructure;
+using VaquinhaOnline.Infrastructure.Seeds;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +27,13 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+// Chamar o SeedService para popular a base de dados
+using (var scope = app.Services.CreateScope())
+{
+    var seedService = scope.ServiceProvider.GetRequiredService<ISeedService>();
+    await seedService.SeedDatabaseAsync(scope.ServiceProvider);
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

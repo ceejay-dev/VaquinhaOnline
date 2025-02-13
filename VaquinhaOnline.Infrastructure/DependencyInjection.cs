@@ -1,13 +1,12 @@
-﻿using VaquinhaOnline.Domain.Interfaces.IRepository;
-
-namespace VaquinhaOnline.Infrastructure;
+﻿namespace VaquinhaOnline.Infrastructure;
 
 public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     => services
             .AddDb(configuration)
-            .AddRepositories();
+            .AddRepositories()
+            .AddServices(configuration);
 
     private static IServiceCollection AddDb(this IServiceCollection services, IConfiguration configuration)
     {
@@ -47,11 +46,11 @@ public static class DependencyInjection
         return services;
     }
 
-    //private static IServiceCollection AddExternalServices(this IServiceCollection services, IConfiguration configuration)
-    //{
-    //    services.AddScoped<IEmailService, EmailService>();
+    private static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddScoped<ISeedService, SeedService>();
 
-    //    return services;
-    //}
+        return services;
+    }
 
 }

@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using VaquinhaOnline.Infrastructure.ConfigurationMappings.IdentityMappings;
 
 namespace VaquinhaOnline.Infrastructure.Persistence;
 
@@ -19,5 +20,9 @@ public class ApplicationDbContext : IdentityDbContext<AppUser, AppRole, Guid,
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
         base.OnModelCreating(builder);
+
+        builder.ApplyConfiguration(new AppUserConfiguration());
+        builder.ApplyConfiguration(new AppRoleConfiguration());
+        builder.ApplyConfiguration(new AppUserRoleConfiguration());
     }
 }

@@ -1,8 +1,10 @@
-﻿namespace VaquinhaOnline.Application.Features.Projects;
+﻿using Microsoft.AspNetCore.Http;
+
+namespace VaquinhaOnline.Application.Features.Projects;
 
 public interface IProjectService
 {
-    Task<Result<Guid>> CreateProject(ProjectCreateDto project, CancellationToken cancellationToken);
+    Task<Result<Guid>> CreateProject(ProjectCreateDto project, IFormFile Image,CancellationToken cancellationToken);
     Task<Result> DeleteProject(Guid Id, CancellationToken cancellationToken);
     Task<Result> UpdateProject(ProjectUpdateDto project, CancellationToken cancellationToken);
     Task<Result<ProjectGetDto>> GetProjectById(Guid Id, CancellationToken cancellationToken);
