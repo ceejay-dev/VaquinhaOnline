@@ -304,6 +304,12 @@ namespace VaquinhaOnline.Infrastructure.Persistence.Migrations
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("RefreshTokenExpiryTime");
 
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("text")
+                        .HasColumnName("Role");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
 
