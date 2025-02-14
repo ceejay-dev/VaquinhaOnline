@@ -23,6 +23,11 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
             .HasColumnName("Description")
             .HasColumnType("text");
 
+        builder.Property(x => x.Image)
+            .IsRequired()
+            .HasColumnName("Image")
+            .HasColumnType("text");
+
         builder.Property(x => x.Status)
             .IsRequired()
             .HasColumnName("Status")

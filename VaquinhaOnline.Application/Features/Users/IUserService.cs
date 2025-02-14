@@ -11,4 +11,5 @@ public interface IUserService
     Task<Result> UpdateUser(UserUpdateDto User, IFormFile profilePhoto,CancellationToken cancellationToken);
     Task<Result<UserGetDto>> GetUserById(Guid Id, CancellationToken cancellationToken);
     Task<ResultPaginated<List<UserGetDto>>> GetAllUsers(int PageNumber, int PageSize, CancellationToken cancellationToken);
+    Task<Result<Guid>> GetCurrentUser(CancellationToken cancellationToken);
 }

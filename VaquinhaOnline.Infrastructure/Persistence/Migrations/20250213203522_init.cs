@@ -171,11 +171,11 @@ namespace VaquinhaOnline.Infrastructure.Persistence.Migrations
                     Description = table.Column<string>(type: "text", nullable: false),
                     Sector = table.Column<string>(type: "text", nullable: false),
                     Status = table.Column<string>(type: "text", maxLength: 50, nullable: false),
+                    Image = table.Column<string>(type: "text", nullable: false),
                     GoalValue = table.Column<double>(type: "numeric(18,2)", nullable: false),
                     CurrentValue = table.Column<double>(type: "numeric(18,2)", nullable: false),
                     PublicationDate = table.Column<DateTime>(type: "DATE", nullable: false),
                     ClosingDate = table.Column<DateTime>(type: "DATE", nullable: false),
-                    Progress = table.Column<string>(type: "text", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     InvestmentId = table.Column<Guid>(type: "uuid", nullable: false)
                 },

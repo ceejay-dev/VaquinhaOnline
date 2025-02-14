@@ -7,12 +7,14 @@ namespace VaquinhaOnline.Application.Features.Users;
 
 public class UserService(UserManager<AppUser> userManager, IValidator<UserCreateDto> validator,
     SignInManager<AppUser> signInManager, IConfiguration configuration,
-    IJwtService jwtService, IValidator<LoginRequestDto> validatorr, IValidator<UserUpdateDto> updateValidator) : IUserService
+    IJwtService jwtService, IValidator<LoginRequestDto> validatorr,
+    IValidator<UserUpdateDto> updateValidator, IHttpContextAccessor httpContextAccessor) : IUserService
 {
     private readonly UserManager<AppUser> userManager = userManager;
     private readonly SignInManager<AppUser> signInManager = signInManager;
     private readonly IConfiguration configuration = configuration;
     private readonly IJwtService jwtService = jwtService;
+    private readonly IHttpContextAccessor httpContextAccessor = httpContextAccessor;
     private readonly IValidator<UserCreateDto> validator = validator;
     private readonly IValidator<LoginRequestDto> validatorr = validatorr;
     private readonly IValidator<UserUpdateDto> updateValidator = updateValidator;
@@ -260,5 +262,17 @@ public class UserService(UserManager<AppUser> userManager, IValidator<UserCreate
         }
 
         return Result.Succeed();
+    }
+
+    public async Task<Result<Guid>> GetCurrentUser( CancellationToken cancellationToken)
+    {
+        var userId = httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (userId == null)
+        {
+            return Result.Failure<Guid>(Error.NotFound("UserNotFound", "Current user was not found."));
+        }
+
+        return Result.Succeed(Guid.Parse(userId));
     }
 }

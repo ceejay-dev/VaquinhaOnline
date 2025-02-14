@@ -8,13 +8,6 @@ public class InvestmentValidator : AbstractValidator<InvestmentCreateDto>
             .GreaterThan(0)
             .WithMessage("The investment value must be greater than zero.");
 
-        RuleFor(x => x.InvestmentDate)
-            .NotEmpty()
-            .NotNull()
-            .WithMessage("The investment date is required.")
-            .LessThanOrEqualTo(DateTime.UtcNow)
-            .WithMessage("The investment date cannot be in the future.");
-
         RuleFor(x => x.Description)
             .NotEmpty()
             .WithMessage("The description is required.")
@@ -25,8 +18,8 @@ public class InvestmentValidator : AbstractValidator<InvestmentCreateDto>
             .NotEmpty()
             .NotNull()
             .WithMessage("The investment type is required.")
-            .Must(type => new[] { "Monetary", "Mentorship", "Materials" }
+            .Must(type => new[] { "Financeiro", "Mentoria", "Materiais" }
                 .Contains(type))
-            .WithMessage("The investment type must be one of the following: Monetary, Mentorship, Materials.");
+            .WithMessage("The investment type must be one of the following: Financeiro, Mentoria, Materiais.");
     }
 }

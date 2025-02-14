@@ -8,6 +8,7 @@ public class Project : Entity
     public string Description { get; private set; } = string.Empty;
     public string Sector { get; private set; } = string.Empty;
     public string Status { get; private set; } = string.Empty;
+    public string Image { get; private set; } = string.Empty;   
     public double GoalValue { get; private set; }
     public double CurrentValue { get; private set; }
     public DateTime PublicationDate { get; private set; }
@@ -22,12 +23,13 @@ public class Project : Entity
     {
     }
 
-    public Project(string title, string description, string sector, string status, double goalValue, DateTime closingDate, Guid userId)
+    public Project(string title, string description, string sector, string image,double goalValue, DateTime closingDate, Guid userId)
     {
         Title = title;
         Description = description;
         Sector = sector;
-        Status = status;
+        Status = "Criado";
+        Image = image;
         GoalValue = goalValue;
         CurrentValue = 0;
         PublicationDate = DateTime.UtcNow;

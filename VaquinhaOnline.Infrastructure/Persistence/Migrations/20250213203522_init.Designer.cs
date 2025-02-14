@@ -12,8 +12,8 @@ using VaquinhaOnline.Infrastructure.Persistence;
 namespace VaquinhaOnline.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250213155007_updateProject")]
-    partial class updateProject
+    [Migration("20250213203522_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -177,6 +177,11 @@ namespace VaquinhaOnline.Infrastructure.Persistence.Migrations
                     b.Property<double>("GoalValue")
                         .HasColumnType("decimal(18,2)")
                         .HasColumnName("GoalValue");
+
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("Image");
 
                     b.Property<Guid>("InvestmentId")
                         .HasColumnType("uuid");

@@ -16,11 +16,6 @@ public class ProjectValidator : AbstractValidator<ProjectCreateDto>
             .NotEmpty().WithMessage("The sector is required.")
             .MaximumLength(50).WithMessage("The sector must be at most 50 characters long.");
 
-        RuleFor(x => x.Status)
-            .NotEmpty().WithMessage("The status is required.")
-            .Must(status => new[] { "Active", "Inactive", "Completed" }.Contains(status))
-            .WithMessage("The status must be 'Active', 'Inactive', or 'Completed'.");
-
         RuleFor(x => x.GoalValue)
             .GreaterThan(0).WithMessage("The goal value must be greater than zero.");
 

@@ -67,9 +67,9 @@ public class ProjectController(IProjectService projectService) : ControllerBase
         Summary = "Recupera um projecto",
         Description = "Endpoint para recuperação de um projecto do sistema pelo Id."
     )]
-    public async Task<IActionResult> GetProjectById([FromRoute] ProjectGetDto investment, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetProjectById([FromRoute] Guid Id, CancellationToken cancellationToken)
     {
-        var result = await projectService.GetProjectById(investment.Id, cancellationToken);
+        var result = await projectService.GetProjectById(Id, cancellationToken);
 
         if (result.IsSucess)
             return Ok(result);
@@ -85,18 +85,44 @@ public class ProjectController(IProjectService projectService) : ControllerBase
         Summary = "Recupera todos os projectos",
         Description = "Endpoint para recuperação de todos os projectos registados no sistema."
     )]
-    public async Task<IActionResult> GetAllProjects([FromQuery] int PageNumber, int PageSize, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAllProjects([FromQuery] int PageNumber = 1, int PageSize = 12)
     {
-        if (PageNumber < 1 || PageSize < 1)
-        {
-            return BadRequest("PageNumber & PageSize must be greater than 0.");
-        }
-
+        var cancellationToken = HttpContext.RequestAborted;
         var result = await projectService.GetAllProjects(PageNumber, PageSize, cancellationToken);
 
         return result.IsSucess
             ? Ok(result)
             : NotFound("There is no projects registred.");
+    }
+
+    [HttpGet("user")]
+    [SwaggerOperation(
+        Summary = "Recupera todos os projectos",
+        Description = "Endpoint para recuperação de todos os projectos registados no sistema."
+    )]
+    public async Task<IActionResult> GetAllProjectsByUserId([FromQuery] int PageNumber = 1, int PageSize = 12)
+    {
+        var cancellationToken = HttpContext.RequestAborted;
+        var result = await projectService.GetAllProjectsByUserId(PageNumber, PageSize, cancellationToken);
+
+        return result.IsSucess  
+            ? Ok(result)
+            : NotFound("There is no projects registred.");
+    }
+
+    [HttpGet("projects/{fileName}")]
+    public IActionResult GetProjectImage(string fileName)
+    {
+        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "projects", fileName);
+
+        if (System.IO.File.Exists(filePath))
+        {
+            return File(System.IO.File.ReadAllBytes(filePath), "image/jpeg");
+        }
+        else
+        {
+            return NotFound();
+        }
     }
 }
 

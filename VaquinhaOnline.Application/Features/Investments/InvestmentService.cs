@@ -2,9 +2,11 @@
 
 namespace VaquinhaOnline.Application.Features.Investments;
 
-public class InvestmentService(IInvestmentRepository investmentRepository, IValidator<InvestmentCreateDto> validator) : IInvestmentService
+public class InvestmentService(IInvestmentRepository investmentRepository,
+    IValidator<InvestmentCreateDto> validator, IProjectRepository projectRepository) : IInvestmentService
 {
     private readonly IInvestmentRepository investmentRepository = investmentRepository;
+    private readonly IProjectRepository projectRepository = projectRepository;
     private readonly IValidator<InvestmentCreateDto> validator = validator;
 
     public async Task<Result<Guid>> CreateInvestment(InvestmentCreateDto investmentDto, CancellationToken cancellationToken)
@@ -18,15 +20,24 @@ public class InvestmentService(IInvestmentRepository investmentRepository, IVali
             );
         }
 
+        var existingProject = await projectRepository.GetProjectById(investmentDto.ProjectId, cancellationToken);
+
+        if (existingProject == null)
+        {
+            return Result.Failure<Guid>(Error.Invalid("Error.NotFound", "The project was not found."));
+        }
+
         var investment = new Investment(
             value: investmentDto.Value,
-            investmentDate: investmentDto.InvestmentDate,
+            investmentDate: DateTime.UtcNow,
             description: investmentDto.Description,
             investmentType: investmentDto.InvestmentType,
             projectId: investmentDto.ProjectId,
             userId: investmentDto.UserId
         );
 
+        existingProject.UpdateCurrentValue(investmentDto.Value);
+        await projectRepository.Update(existingProject, cancellationToken);
         var result = await investmentRepository.Create(investment, cancellationToken);
 
         return result;

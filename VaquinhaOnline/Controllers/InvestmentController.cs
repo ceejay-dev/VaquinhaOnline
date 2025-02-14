@@ -32,9 +32,9 @@ public class InvestmentController (IInvestmentService investmentService) : Contr
         Summary = "Remove um investimento",
         Description = "Endpoint para remover um investimento do sistema pelo Id."
     )]
-    public async Task<IActionResult> DeleteInvestment([FromRoute] InvestmentGetDto investment, CancellationToken cancellationToken)
+    public async Task<IActionResult> DeleteInvestment([FromRoute] Guid Id, CancellationToken cancellationToken)
     {
-        var result = await investmentService.DeleteInvestment(investment.Id, cancellationToken);
+        var result = await investmentService.DeleteInvestment(Id, cancellationToken);
 
         if (result.IsSucess)
             return NoContent();

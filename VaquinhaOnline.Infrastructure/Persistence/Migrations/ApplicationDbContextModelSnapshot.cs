@@ -175,6 +175,11 @@ namespace VaquinhaOnline.Infrastructure.Persistence.Migrations
                         .HasColumnType("decimal(18,2)")
                         .HasColumnName("GoalValue");
 
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("Image");
+
                     b.Property<Guid>("InvestmentId")
                         .HasColumnType("uuid");
 
@@ -303,12 +308,6 @@ namespace VaquinhaOnline.Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("RefreshTokenExpiryTime")
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("RefreshTokenExpiryTime");
-
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("text")
-                        .HasColumnName("Role");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");

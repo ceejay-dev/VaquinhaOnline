@@ -9,6 +9,11 @@ public class ProjectRepository (ApplicationDbContext context) : BaseRepository<P
         return context.Projects.AsQueryable();
     }
 
+    public IQueryable<Project> GetAllProjectsByUserId(Guid Id)
+    {
+        return context.Projects.AsQueryable().Where(x => x.UserId == Id);
+    }
+
     public async Task<Project> GetProjectById(Guid id, CancellationToken cancellationToken)
     {
        return await context.Projects.FirstOrDefaultAsync(p => p.Id == id);

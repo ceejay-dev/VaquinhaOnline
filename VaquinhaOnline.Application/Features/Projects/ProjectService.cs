@@ -1,18 +1,16 @@
-﻿
-using FluentValidation;
-using Microsoft.AspNetCore.Http;
-using VaquinhaOnline.Domain.Entities;
-using VaquinhaOnline.Domain.Interfaces.IRepository;
-using VaquinhaOnline.Infrastructure.Repositories;
+﻿using Microsoft.AspNetCore.Http;
+using VaquinhaOnline.Application.Features.Users;
 
 namespace VaquinhaOnline.Application.Features.Projects;
 
-public class ProjectService(IProjectRepository projectRepository, IValidator<ProjectCreateDto> validator) : IProjectService
+public class ProjectService(IProjectRepository projectRepository, IValidator<ProjectCreateDto> validator
+    , IUserService userService) : IProjectService
 {
     private readonly IProjectRepository projectRepository = projectRepository;
+    private readonly IUserService userService = userService;
     private readonly IValidator<ProjectCreateDto> validator = validator;
 
-    public async Task<Result<Guid>> CreateProject(ProjectCreateDto projectDto, IFormFile Image,CancellationToken cancellationToken)
+    public async Task<Result<Guid>> CreateProject(ProjectCreateDto projectDto, IFormFile Image, CancellationToken cancellationToken)
     {
         var validationResult = validator.Validate(projectDto);
 
@@ -23,12 +21,30 @@ public class ProjectService(IProjectRepository projectRepository, IValidator<Pro
             );
         }
 
+        string photoPath = null;
+
+        if (Image != null)
+        {
+            var uploadsFolder = Path.Combine("wwwroot", "projects");
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+            var uniqueFileName = Guid.NewGuid() + Path.GetExtension(Image.FileName);
+            photoPath = Path.Combine(uploadsFolder, uniqueFileName);
+            using (var fileStream = new FileStream(photoPath, FileMode.Create))
+            {
+                await Image.CopyToAsync(fileStream);
+            }
+            photoPath = uniqueFileName;
+        }
+
         var project = new Project(
             title: projectDto.Title,
             description: projectDto.Description,
             sector: projectDto.Sector,
-            status: projectDto.Status,
             goalValue: projectDto.GoalValue,
+            image: photoPath,
             closingDate: projectDto.ClosingDate,
             userId: projectDto.UserId
         );
@@ -54,6 +70,43 @@ public class ProjectService(IProjectRepository projectRepository, IValidator<Pro
     public async Task<ResultPaginated<List<ProjectGetDto>>> GetAllProjects(int PageNumber, int PageSize, CancellationToken cancellationToken)
     {
         var projectQuery = projectRepository.GetAllProjects();
+
+        //Counting 
+        var totalCount = projectQuery.Count();
+
+        if (totalCount == 0)
+        {
+            return Result.Failure<ProjectGetDto>(
+                error: Error.NotFound("NotFound", "No project found."),
+                totalCount: totalCount,
+                currentPage: PageNumber,
+                pageSize: PageSize);
+        }
+
+        // Calculating the pagination
+        var pageNumber = PageNumber < 1 ? 1 : PageNumber;
+        var pageSize = PageSize < 1 ? 10 : PageSize;
+
+        var projects = await projectQuery
+            .OrderBy(c => c.Id)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+
+        var projectsDtos = projects.Adapt<List<ProjectGetDto>>();
+
+        return ResultPaginated<List<ProjectGetDto>>.Success(
+            values: projectsDtos,
+            totalCount: totalCount,
+            currentPage: pageNumber,
+            pageSize: pageSize);
+    }
+
+    public async Task<ResultPaginated<List<ProjectGetDto>>> GetAllProjectsByUserId(int PageNumber, int PageSize, CancellationToken cancellationToken)
+    {
+        var userId = await userService.GetCurrentUser(cancellationToken);
+
+        var projectQuery = projectRepository.GetAllProjectsByUserId(userId.Value);
 
         //Counting 
         var totalCount = projectQuery.Count();
